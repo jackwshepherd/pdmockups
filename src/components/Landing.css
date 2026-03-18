@@ -1,0 +1,193 @@
+.landing {
+  min-height: 100vh;
+  background: #f5f5f5;
+}
+
+.landing-topbar {
+  height: 80px;
+  background: #000;
+  display: flex;
+  align-items: center;
+  padding: 0 32px;
+}
+
+.landing-topbar-logo {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  font-size: 22px;
+  color: #fff;
+  letter-spacing: 0.3px;
+}
+
+.landing-content {
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 40px 32px;
+}
+
+.landing-heading {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 32px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 8px;
+}
+
+.landing-subtitle {
+  font-size: 15px;
+  color: #666;
+  margin-bottom: 32px;
+}
+
+.landing-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.landing-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.landing-card:hover {
+  border-color: #ccc;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.landing-card-body {
+  padding: 20px;
+  flex: 1;
+}
+
+.landing-card-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #111;
+  margin: 0 0 8px;
+  word-break: break-word;
+}
+
+.landing-card-type {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #fff;
+  background: #555;
+  padding: 2px 8px;
+  border-radius: 3px;
+  margin-right: 6px;
+}
+
+.landing-card-meta {
+  font-size: 12px;
+  color: #999;
+}
+
+.landing-card-actions {
+  display: flex;
+  border-top: 1px solid #f0f0f0;
+  padding: 0;
+}
+
+.landing-card-action {
+  flex: 1;
+  padding: 10px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: Arial, sans-serif;
+  color: #888;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.landing-card-action:first-child {
+  border-right: 1px solid #f0f0f0;
+}
+
+.landing-card-action:hover {
+  color: #333;
+  background: #fafafa;
+}
+
+.landing-card-action--danger:hover {
+  color: #c00;
+  background: #fff5f5;
+}
+
+/* New / Import cards */
+.landing-card--new,
+.landing-card--import {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  border: 2px dashed #d0d0d0;
+  background: transparent;
+}
+
+.landing-card--new:hover,
+.landing-card--import:hover {
+  border-color: #0099cc;
+  background: rgba(0, 153, 204, 0.03);
+}
+
+.landing-card-plus {
+  font-size: 36px;
+  color: #bbb;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.landing-card--new:hover .landing-card-plus {
+  color: #0099cc;
+}
+
+.landing-card-import-icon {
+  font-size: 28px;
+  color: #bbb;
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.landing-card--import:hover .landing-card-import-icon {
+  color: #0099cc;
+}
+
+.landing-card-new-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #999;
+}
+
+.landing-card--new:hover .landing-card-new-label,
+.landing-card--import:hover .landing-card-new-label {
+  color: #0099cc;
+}
+
+.landing-card-tooltip {
+  display: none;
+  font-size: 11px;
+  font-weight: 400;
+  color: #fff;
+  background: #333;
+  padding: 6px 10px;
+  border-radius: 4px;
+  margin-top: 8px;
+  text-align: center;
+  line-height: 1.4;
+  max-width: 200px;
+}
+
+.landing-card--import:hover .landing-card-tooltip {
+  display: block;
+}

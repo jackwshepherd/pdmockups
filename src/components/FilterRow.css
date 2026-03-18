@@ -1,0 +1,107 @@
+.filter-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 10px;
+  padding: 10px;
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+}
+
+.filter-row-wrapper {
+  transition: transform 0.15s ease;
+}
+
+.filter-row-wrapper.dragging {
+  opacity: 0.4;
+}
+
+.filter-row-wrapper.drag-over {
+  border-top: 2px solid #0099cc;
+}
+
+.filter-row-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-drag-handle {
+  cursor: grab;
+  color: #aaa;
+  font-size: 16px;
+  user-select: none;
+  padding: 0 2px;
+}
+
+.filter-drag-handle:hover {
+  color: #555;
+}
+
+.filter-drag-handle:active {
+  cursor: grabbing;
+}
+
+.filter-name-input {
+  flex: 1;
+  padding: 8px 10px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-family: Arial, sans-serif;
+}
+
+.filter-name-input:focus {
+  outline: none;
+  border-color: #0099cc;
+}
+
+.filter-checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 12px;
+  color: #555;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.filter-remove-btn {
+  width: 28px;
+  height: 28px;
+  border: none;
+  background: none;
+  color: #999;
+  font-size: 20px;
+  cursor: pointer;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.filter-remove-btn:hover {
+  background: #fee;
+  color: #c00;
+}
+
+.filter-row-footer {
+  padding-left: 26px;
+}
+
+.filter-edit-values-btn {
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0099cc;
+  background: none;
+  border: 1px solid #d0e8f0;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.filter-edit-values-btn:hover {
+  background: rgba(0, 153, 204, 0.06);
+  border-color: #0099cc;
+}

@@ -1,0 +1,191 @@
+.config-panel {
+  width: 400px;
+  min-width: 400px;
+  height: 100vh;
+  overflow-y: auto;
+  padding: 16px 24px 24px;
+  border-right: 1px solid #e0e0e0;
+  background: #fafafa;
+  display: flex;
+  flex-direction: column;
+}
+
+.config-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.config-back-btn {
+  font-size: 13px;
+  font-weight: 600;
+  font-family: Arial, sans-serif;
+  color: #0099cc;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.config-back-btn:hover {
+  text-decoration: underline;
+}
+
+.config-top-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.config-top-link {
+  font-size: 12px;
+  font-family: Arial, sans-serif;
+  color: #888;
+  background: none;
+  border: none;
+  cursor: pointer;
+  text-decoration: underline;
+  padding: 0;
+}
+
+.config-top-link:hover {
+  color: #333;
+}
+
+.config-top-link--danger:hover {
+  color: #c00;
+}
+
+.config-heading {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 8px 0 24px;
+  color: #111;
+}
+
+.config-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #555;
+  margin-bottom: 16px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.config-input,
+.config-select {
+  display: block;
+  width: 100%;
+  margin-top: 6px;
+  padding: 10px 12px;
+  font-size: 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-family: Arial, sans-serif;
+  background: #fff;
+}
+
+.config-input:focus,
+.config-select:focus {
+  outline: none;
+  border-color: #0099cc;
+  box-shadow: 0 0 0 2px rgba(0, 153, 204, 0.15);
+}
+
+.config-filters-section {
+  margin-top: 8px;
+  flex: 1;
+}
+
+.config-filters-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
+.config-filters-header .config-label {
+  margin-bottom: 0;
+}
+
+.config-add-btn {
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #0099cc;
+  background: none;
+  border: 1px solid #0099cc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.config-add-btn:hover {
+  background: rgba(0, 153, 204, 0.06);
+}
+
+.config-empty {
+  font-size: 14px;
+  color: #999;
+  font-style: italic;
+}
+
+.config-actions {
+  display: flex;
+  gap: 8px;
+  padding-top: 16px;
+  border-top: 1px solid #e0e0e0;
+  margin-top: 16px;
+}
+
+.config-action-btn {
+  flex: 1;
+  padding: 8px 12px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: Arial, sans-serif;
+  color: #333;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+  position: relative;
+}
+
+.config-action-btn .tooltip {
+  display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 400;
+  padding: 6px 10px;
+  border-radius: 4px;
+  white-space: normal;
+  width: 180px;
+  text-align: center;
+  line-height: 1.4;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.config-action-btn:hover .tooltip {
+  display: block;
+}
+
+.config-action-btn:hover {
+  background: #f0f0f0;
+}
+
+.config-action-btn--pdf {
+  color: #fff;
+  background: #333;
+  border-color: #333;
+}
+
+.config-action-btn--pdf:hover {
+  background: #555;
+}

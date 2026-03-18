@@ -1,0 +1,125 @@
+.preview {
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto;
+  background: #fff;
+}
+
+.preview-topbar {
+  height: 80px;
+  width: 100%;
+  background: #000;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  gap: 16px;
+}
+
+.drawer-toggle {
+  background: none;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: #fff;
+  font-family: Arial, sans-serif;
+  font-size: 13px;
+  padding: 6px 12px;
+  border-radius: 3px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.drawer-toggle:hover {
+  border-color: rgba(255, 255, 255, 0.6);
+}
+
+.preview-topbar-logo {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  font-size: 22px;
+  color: #fff;
+  letter-spacing: 0.3px;
+}
+
+.preview-content {
+  padding: 32px 40px;
+}
+
+.preview-title {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: #111;
+  margin-bottom: 12px;
+}
+
+.preview-instructions {
+  font-size: 15px;
+  color: #555;
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.preview-filters-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.preview-filter-label {
+  display: block;
+  font-size: 15px;
+  font-weight: 700;
+  font-family: Arial, sans-serif;
+  color: #111;
+  margin-bottom: 6px;
+}
+
+.preview-filter-select {
+  width: 100%;
+  padding: 8px 10px;
+  font-size: 13px;
+  color: #999;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-family: Arial, sans-serif;
+  background: #fff;
+}
+
+.preview-add-filter-placeholder {
+  border: 2px dashed #ccc;
+  border-radius: 6px;
+  padding: 24px;
+  text-align: center;
+  font-size: 14px;
+  color: #999;
+  margin-bottom: 24px;
+  cursor: pointer;
+}
+
+.preview-add-filter-placeholder:hover {
+  border-color: #0099cc;
+  color: #0099cc;
+}
+
+.preview-search-btn {
+  padding: 10px 28px;
+  font-size: 15px;
+  font-family: Arial, sans-serif;
+  font-weight: 600;
+  color: #fff;
+  background: #0099cc;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-bottom: 32px;
+}
+
+.preview-search-btn:hover {
+  background: #007aa3;
+}
+
+@media print {
+  .drawer-toggle {
+    display: none;
+  }
+}
