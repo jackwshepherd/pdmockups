@@ -42,8 +42,10 @@
 
 /* Fixed column widths */
 .col-btn {
-  width: 140px;
-  min-width: 140px;
+  width: 1px;
+  white-space: nowrap;
+  padding-left: 8px;
+  padding-right: 8px;
 }
 
 .col-title {
