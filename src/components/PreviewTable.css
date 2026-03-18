@@ -6,7 +6,6 @@
   border-collapse: collapse;
   font-size: 14px;
   font-family: Arial, sans-serif;
-  table-layout: fixed;
   min-width: 100%;
 }
 
@@ -42,10 +41,9 @@
 
 /* Fixed column widths */
 .col-btn {
-  width: 1px;
+  width: 1%;
   white-space: nowrap;
-  padding-left: 8px;
-  padding-right: 8px;
+  padding: 10px 4px;
 }
 
 .col-title {
