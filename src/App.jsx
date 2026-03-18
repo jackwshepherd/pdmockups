@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
+import html2canvas from 'html2canvas';
+import { jsPDF } from 'jspdf';
 import Landing from './components/Landing';
 import ConfigPanel from './components/ConfigPanel';
 import Preview from './components/Preview';
@@ -177,32 +179,26 @@ function App() {
     e.target.value = '';
   };
 
-  const exportPdf = () => {
+  const exportPdf = async () => {
     const el = previewRef.current;
     if (!el) return;
-    const printWindow = window.open('', '_blank');
-    printWindow.document.write(`
-      <html>
-        <head>
-          <title>${config.title || 'Preview'}</title>
-          <style>
-            * { margin: 0; padding: 0; box-sizing: border-box; }
-            body { font-family: Arial, sans-serif; -webkit-font-smoothing: antialiased; }
-            @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
-          </style>
-          <link rel="stylesheet" href="${Array.from(document.querySelectorAll('link[rel="stylesheet"]')).map(l => l.href).join('" /><link rel="stylesheet" href="')}">
-          <style>
-            ${Array.from(document.querySelectorAll('style')).map(s => s.textContent).join('\n')}
-            @media print { body { print-color-adjust: exact; -webkit-print-color-adjust: exact; } }
-          </style>
-        </head>
-        <body>${el.outerHTML}</body>
-      </html>
-    `);
-    printWindow.document.close();
-    setTimeout(() => {
-      printWindow.print();
-    }, 300);
+    const canvas = await html2canvas(el, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: '#fff',
+    });
+    const imgData = canvas.toDataURL('image/png');
+    const imgWidth = canvas.width;
+    const imgHeight = canvas.height;
+    const pdfWidth = imgWidth * 0.75;
+    const pdfHeight = imgHeight * 0.75;
+    const pdf = new jsPDF({
+      orientation: pdfWidth > pdfHeight ? 'landscape' : 'portrait',
+      unit: 'pt',
+      format: [pdfWidth, pdfHeight],
+    });
+    pdf.addImage(imgData, 'PNG', 0, 0, pdfWidth, pdfHeight);
+    pdf.save(`${config.title || 'preview'}.pdf`);
   };
 
   // Landing page

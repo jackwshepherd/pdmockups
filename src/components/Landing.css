@@ -133,6 +133,7 @@
   padding: 32px 20px;
   border: 2px dashed #d0d0d0;
   background: transparent;
+  position: relative;
 }
 
 .landing-card--new:hover,
@@ -176,16 +177,21 @@
 
 .landing-card-tooltip {
   display: none;
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 11px;
   font-weight: 400;
   color: #fff;
   background: #333;
   padding: 6px 10px;
   border-radius: 4px;
-  margin-top: 8px;
   text-align: center;
   line-height: 1.4;
-  max-width: 200px;
+  width: 200px;
+  z-index: 10;
+  pointer-events: none;
 }
 
 .landing-card--import:hover .landing-card-tooltip {
