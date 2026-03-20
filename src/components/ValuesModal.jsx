@@ -1,4 +1,5 @@
 import { useState, useRef } from 'react';
+import './Modal.css';
 import './ValuesModal.css';
 
 function parseValues(text) {

@@ -1,4 +1,6 @@
 import { useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import './Modal.css';
 import './FilterEditModal.css';
 
 function parseValues(text) {
@@ -76,7 +78,7 @@ function FilterEditModal({ filter, onUpdate, onRemove, onClose }) {
     onClose();
   };
 
-  return (
+  return createPortal(
     <div className="modal-backdrop" onClick={onClose}>
       <div className="modal filter-edit-modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
@@ -201,7 +203,8 @@ function FilterEditModal({ filter, onUpdate, onRemove, onClose }) {
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
 
