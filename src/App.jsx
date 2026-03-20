@@ -50,23 +50,55 @@ function loadFromStorage() {
 
 // Parse share link once at module level so we don't double-consume it
 let _shareError = false;
-const _sharedPage = (() => {
-  // Support both ?share= (query param, reliable in chat apps) and #share= (hash, legacy)
+let _shareParsed = null; // raw parsed data or { _existingId } if already imported
+(() => {
   const params = new URLSearchParams(window.location.search);
   let compressed = params.get('share');
   if (!compressed) {
     const hash = window.location.hash;
     if (hash.startsWith('#share=')) compressed = hash.slice('#share='.length);
   }
-  if (!compressed) return null;
+  if (!compressed) return;
   try {
     const json = decompressFromEncodedURIComponent(compressed);
-    if (!json) { _shareError = true; return null; }
+    if (!json) { _shareError = true; return; }
     const parsed = JSON.parse(json);
+    window.history.replaceState(null, '', window.location.pathname);
+
+    // Check if already imported (by shareId)
+    if (parsed.shareId) {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const data = JSON.parse(raw);
+          const existing = (data.pages || []).find((p) => p.shareId === parsed.shareId);
+          if (existing) {
+            _shareParsed = { _existingId: existing.id };
+            return;
+          }
+        }
+      } catch { /* ignore */ }
+    }
+
+    _shareParsed = parsed;
+  } catch {
+    _shareError = true;
+  }
+})();
+
+function App() {
+  const [pages, setPages] = useState(() => {
+    const stored = loadFromStorage();
+    // If share link matched an existing page, no need to add
+    if (!_shareParsed || _shareParsed._existingId) return stored;
+    // Create the page now, after loadFromStorage has set correct ID counters
+    const parsed = _shareParsed;
     const page = {
       id: nextPageId++,
       title: parsed.title || '',
       type: parsed.type || 'documents',
+      shareId: parsed.shareId || null,
+      allowFiles: parsed.allowFiles || false,
       filters: (parsed.filters || []).map((f) => ({
         ...f,
         id: nextFilterId++,
@@ -74,20 +106,13 @@ const _sharedPage = (() => {
       })),
       questionnaire: parsed.questionnaire || { sections: [], uploads: [] },
     };
-    window.history.replaceState(null, '', window.location.pathname);
-    return page;
-  } catch {
-    _shareError = true;
-    return null;
-  }
-})();
-
-function App() {
-  const [pages, setPages] = useState(() => {
-    const stored = loadFromStorage();
-    return _sharedPage ? [...stored, _sharedPage] : stored;
+    _shareParsed = { _createdId: page.id };
+    return [...stored, page];
   });
-  const [activePageId, setActivePageId] = useState(_sharedPage?.id ?? null);
+  const [activePageId, setActivePageId] = useState(() => {
+    if (!_shareParsed) return null;
+    return _shareParsed._existingId ?? _shareParsed._createdId ?? null;
+  });
   const [view, setView] = useState('editor'); // 'editor' | 'questionnaire'
   const [shareToast, setShareToast] = useState(
     _shareError ? 'Share link was corrupted or truncated. Ask the sender to re-share.' : false
@@ -247,16 +272,36 @@ function App() {
 
   const shareLink = () => {
     if (!config) return;
+    // Ensure page has a stable shareId
+    if (!config.shareId) {
+      const shareId = Math.random().toString(36).slice(2, 10);
+      updatePage({ shareId });
+      config.shareId = shareId; // use immediately below
+    }
     const { id, ...data } = config;
     // Strip filter IDs to save space
     data.filters = data.filters.map(({ id, ...rest }) => rest);
     const json = JSON.stringify(data);
     const compressed = compressToEncodedURIComponent(json);
     const url = `${window.location.origin}${window.location.pathname}?share=${compressed}`;
-    navigator.clipboard.writeText(url).then(() => {
+    const copyToClipboard = async (text) => {
+      try {
+        await navigator.clipboard.writeText(text);
+      } catch {
+        // Fallback for Edge and other browsers that block clipboard API
+        const textarea = document.createElement('textarea');
+        textarea.value = text;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+        document.body.appendChild(textarea);
+        textarea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textarea);
+      }
       setShareToast(true);
       setTimeout(() => setShareToast(false), 2000);
-    });
+    };
+    copyToClipboard(url);
   };
 
   const exportPdf = async () => {

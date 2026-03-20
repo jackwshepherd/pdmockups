@@ -1,12 +1,36 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { generateDummyRows } from '../data/dummyData';
 import './PreviewTable.css';
 
 function PreviewTable({ filters, pageType, allowFiles, allFilters, onAddFilter, onUpdateFilter }) {
   const [showPicker, setShowPicker] = useState(false);
+  const [pickerPos, setPickerPos] = useState(null);
+  const addBtnRef = useRef(null);
+  const pickerRef = useRef(null);
   const rows = generateDummyRows(filters, 5);
   const titleLabel = pageType === 'matters' ? 'Matter Name' : 'Document Title';
+
+  useEffect(() => {
+    if (showPicker && addBtnRef.current) {
+      const rect = addBtnRef.current.getBoundingClientRect();
+      setPickerPos({ top: rect.bottom + 4, right: window.innerWidth - rect.right });
+    }
+  }, [showPicker]);
+
+  // Close picker on outside click
+  useEffect(() => {
+    if (!showPicker) return;
+    const handleClick = (e) => {
+      if (pickerRef.current && !pickerRef.current.contains(e.target) &&
+          addBtnRef.current && !addBtnRef.current.contains(e.target)) {
+        setShowPicker(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClick);
+    return () => document.removeEventListener('mousedown', handleClick);
+  }, [showPicker]);
 
   // Filters that exist but aren't shown as columns yet
   const hiddenFilters = allFilters
@@ -37,14 +61,19 @@ function PreviewTable({ filters, pageType, allowFiles, allFilters, onAddFilter, 
             ))}
             <th className="col-add">
               <button
+                ref={addBtnRef}
                 className="table-add-col-btn"
                 onClick={() => setShowPicker((v) => !v)}
                 title="Add column"
               >
                 <FontAwesomeIcon icon="fa-solid fa-plus" />
               </button>
-              {showPicker && (
-                <div className="table-col-picker">
+              {showPicker && pickerPos && createPortal(
+                <div
+                  ref={pickerRef}
+                  className="table-col-picker"
+                  style={{ position: 'fixed', top: pickerPos.top, right: pickerPos.right }}
+                >
                   {hiddenFilters.length > 0 && (
                     <>
                       <div className="table-col-picker-label">Show existing filter</div>
@@ -63,7 +92,8 @@ function PreviewTable({ filters, pageType, allowFiles, allFilters, onAddFilter, 
                   <button className="table-col-picker-item table-col-picker-item--new" onClick={handleAddNew}>
                     <FontAwesomeIcon icon="fa-solid fa-plus" /> New filter
                   </button>
-                </div>
+                </div>,
+                document.body
               )}
             </th>
           </tr>
