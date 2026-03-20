@@ -1,7 +1,7 @@
 import { forwardRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PreviewTable from './PreviewTable';
-import ValuesModal from './ValuesModal';
+import FilterEditModal from './FilterEditModal';
 import { getFilterValues } from '../data/dummyData';
 import './Preview.css';
 
@@ -19,18 +19,17 @@ const Preview = forwardRef(function Preview({
   onRemoveFilter,
   onReorderFilters,
 }, ref) {
-  const [editingFilterId, setEditingFilterId] = useState(null);
-  const [valuesModalFilterId, setValuesModalFilterId] = useState(null);
+  const [editModalFilterId, setEditModalFilterId] = useState(null);
   const [showBulkAdd, setShowBulkAdd] = useState(false);
   const [bulkText, setBulkText] = useState('');
   const [dragIndex, setDragIndex] = useState(null);
   const [overIndex, setOverIndex] = useState(null);
 
-  const filterableFields = config.filters.filter((f) => f.showAsFilter !== false && (f.fieldType || 'dropdown') === 'dropdown');
+  const filterableFields = config.filters.filter((f) => f.showAsFilter !== false && ((f.fieldType || 'dropdown') === 'dropdown' || f.fieldType === 'boolean'));
   const namedFilters = filterableFields.filter((f) => f.name.trim() !== '');
   const tableFilters = namedFilters.filter((f) => f.showInTable);
-  const valuesModalFilter = valuesModalFilterId
-    ? config.filters.find((f) => f.id === valuesModalFilterId)
+  const editModalFilter = editModalFilterId
+    ? config.filters.find((f) => f.id === editModalFilterId)
     : null;
 
   const handleDragStart = (e, index) => {
@@ -110,47 +109,16 @@ const Preview = forwardRef(function Preview({
               onDragEnd={handleDragEnd}
             >
               <div className="preview-filter-top">
-                {editingFilterId === filter.id ? (
-                  <input
-                    type="text"
-                    className="preview-filter-name-input"
-                    value={filter.name}
-                    onChange={(e) => onUpdateFilter(filter.id, { name: e.target.value })}
-                    onBlur={() => setEditingFilterId(null)}
-                    onKeyDown={(e) => { if (e.key === 'Enter') setEditingFilterId(null); }}
-                    autoFocus
-                    placeholder="Filter name"
-                  />
-                ) : (
-                  <label
-                    className="preview-filter-label has-tooltip"
-                    onClick={() => setEditingFilterId(filter.id)}
-                    data-tooltip="Click to rename"
-                  >
-                    {filter.name || 'Untitled filter'}
-                  </label>
-                )}
+                <label className="preview-filter-label">
+                  {filter.name || 'Untitled filter'}
+                </label>
                 <div className="preview-filter-actions">
                   <button
-                    className={'preview-filter-action-btn has-tooltip' + (filter.showInTable ? ' preview-filter-action-btn--active' : '')}
-                    onClick={() => onUpdateFilter(filter.id, { showInTable: !filter.showInTable })}
-                    data-tooltip={filter.showInTable ? 'Showing as column' : 'Show as column'}
-                  >
-                    <FontAwesomeIcon icon="fa-solid fa-table-columns" />
-                  </button>
-                  <button
                     className="preview-filter-action-btn has-tooltip"
-                    onClick={() => setValuesModalFilterId(filter.id)}
-                    data-tooltip="Edit values"
+                    onClick={() => setEditModalFilterId(filter.id)}
+                    data-tooltip="Edit"
                   >
-                    <FontAwesomeIcon icon="fa-solid fa-list" />
-                  </button>
-                  <button
-                    className="preview-filter-action-btn preview-filter-action-btn--danger has-tooltip"
-                    onClick={() => onRemoveFilter(filter.id)}
-                    data-tooltip="Remove"
-                  >
-                    <FontAwesomeIcon icon="fa-solid fa-xmark" />
+                    <FontAwesomeIcon icon="fa-solid fa-pen" />
                   </button>
                   <span className="preview-filter-drag-handle has-tooltip" data-tooltip="Drag to reorder">
                     <FontAwesomeIcon icon="fa-solid fa-grip-vertical" />
@@ -158,7 +126,13 @@ const Preview = forwardRef(function Preview({
                 </div>
               </div>
               {filter.name.trim() !== '' && (
-                isDateFilter(filter.name) ? (
+                filter.fieldType === 'boolean' ? (
+                  <select className="preview-filter-select">
+                    <option value="">All</option>
+                    <option value="yes">Yes</option>
+                    <option value="no">No</option>
+                  </select>
+                ) : isDateFilter(filter.name) ? (
                   <input type="date" className="preview-filter-date" />
                 ) : (
                   <select className="preview-filter-select">
@@ -170,7 +144,9 @@ const Preview = forwardRef(function Preview({
                 )
               )}
               <span className="preview-filter-value-count">
-                {filter.values.length} value{filter.values.length !== 1 ? 's' : ''}
+                {filter.fieldType === 'boolean'
+                  ? 'Boolean'
+                  : `${filter.values.length} value${filter.values.length !== 1 ? 's' : ''}`}
               </span>
             </div>
           ))}
@@ -224,15 +200,21 @@ const Preview = forwardRef(function Preview({
 
         <button className="preview-search-btn">Search</button>
 
-        <PreviewTable filters={tableFilters} pageType={config.type} />
+        <PreviewTable
+          filters={tableFilters}
+          pageType={config.type}
+          allFilters={config.filters}
+          onAddFilter={onAddFilter}
+          onUpdateFilter={onUpdateFilter}
+        />
       </div>
 
-      {valuesModalFilter && (
-        <ValuesModal
-          filterName={valuesModalFilter.name}
-          values={valuesModalFilter.values}
-          onSave={(newValues) => onUpdateFilter(valuesModalFilter.id, { values: newValues })}
-          onClose={() => setValuesModalFilterId(null)}
+      {editModalFilter && (
+        <FilterEditModal
+          filter={editModalFilter}
+          onUpdate={onUpdateFilter}
+          onRemove={onRemoveFilter}
+          onClose={() => setEditModalFilterId(null)}
         />
       )}
     </div>

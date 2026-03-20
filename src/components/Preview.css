@@ -134,7 +134,6 @@
   font-weight: 700;
   font-family: Arial, sans-serif;
   color: #111;
-  cursor: text;
   flex: 1;
   min-width: 0;
   display: -webkit-box;
@@ -142,25 +141,6 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   padding: 2px 0;
-  border-bottom: 1px dashed transparent;
-}
-
-.preview-filter-label:hover {
-  border-bottom-color: #bbb;
-}
-
-.preview-filter-name-input {
-  flex: 1;
-  min-width: 0;
-  font-size: 14px;
-  font-weight: 700;
-  font-family: Arial, sans-serif;
-  color: #111;
-  border: none;
-  border-bottom: 1px solid #0099cc;
-  outline: none;
-  padding: 2px 0;
-  background: transparent;
 }
 
 /* ── Filter action icons ─────────────────────── */

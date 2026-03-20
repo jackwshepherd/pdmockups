@@ -16,7 +16,7 @@ function NewFieldForm({ onAdd, onCancel }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     if (!name.trim()) return;
-    onAdd(name.trim(), fieldType, fieldType === 'dropdown' ? showAsFilter : false);
+    onAdd(name.trim(), fieldType, (fieldType === 'dropdown' || fieldType === 'boolean') ? showAsFilter : false);
   };
 
   return (
@@ -36,10 +36,11 @@ function NewFieldForm({ onAdd, onCancel }) {
           onChange={(e) => setFieldType(e.target.value)}
         >
           <option value="dropdown">Dropdown</option>
+          <option value="boolean">Boolean (Yes / No)</option>
           <option value="text">Short text</option>
           <option value="textarea">Long text</option>
         </select>
-        {fieldType === 'dropdown' && (
+        {(fieldType === 'dropdown' || fieldType === 'boolean') && (
           <label className="qd-new-field-filter-toggle">
             <input type="checkbox" checked={showAsFilter} onChange={(e) => setShowAsFilter(e.target.checked)} />
             Show as filter
@@ -156,6 +157,13 @@ export function QDBuilder({ config, onUpdate, onAddFilter, onUpdateFilter }) {
     const type = filter.fieldType || 'dropdown';
     if (type === 'text') return <input type="text" className="qd-field-control" placeholder="Short text…" disabled />;
     if (type === 'textarea') return <textarea className="qd-field-control qd-field-control--textarea" placeholder="Long text…" disabled />;
+    if (type === 'boolean') return (
+      <select className="qd-field-control" disabled>
+        <option>Select…</option>
+        <option>Yes</option>
+        <option>No</option>
+      </select>
+    );
     if (isDateFilter(filter.name)) return <input type="date" className="qd-field-control" disabled />;
     return (
       <select className="qd-field-control" disabled>
@@ -403,7 +411,17 @@ export function QDPreview({ config }) {
                 <div key={i} className="qd-preview-field">
                   <label className="qd-preview-label">{field.filter.name}</label>
                   {field.description && <p className="qd-preview-field-desc">{field.description}</p>}
-                  {isDateFilter(field.filter.name) ? (
+                  {(field.filter.fieldType === 'text') ? (
+                    <input type="text" className="qd-preview-input" placeholder="Short text…" disabled />
+                  ) : (field.filter.fieldType === 'textarea') ? (
+                    <textarea className="qd-preview-input qd-preview-input--textarea" placeholder="Long text…" disabled />
+                  ) : (field.filter.fieldType === 'boolean') ? (
+                    <select className="qd-preview-select" disabled>
+                      <option>Select…</option>
+                      <option>Yes</option>
+                      <option>No</option>
+                    </select>
+                  ) : isDateFilter(field.filter.name) ? (
                     <input type="date" className="qd-preview-input" disabled />
                   ) : (
                     <select className="qd-preview-select" disabled>

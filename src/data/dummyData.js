@@ -34,9 +34,14 @@ export function generateDummyRows(filters, count = 5) {
   return Array.from({ length: count }, (_, rowIndex) => {
     const row = {};
     filters.forEach((f, fIndex) => {
-      const values = getFilterValues(f);
-      const shuffled = shuffle(values, rowIndex * 100 + fIndex * 7 + 1);
-      row[f.name] = shuffled[rowIndex % shuffled.length];
+      if (f.fieldType === 'boolean') {
+        const seed = rowIndex * 100 + fIndex * 7 + 1;
+        row[f.name] = seed % 2 === 0 ? 'Yes' : 'No';
+      } else {
+        const values = getFilterValues(f);
+        const shuffled = shuffle(values, rowIndex * 100 + fIndex * 7 + 1);
+        row[f.name] = shuffled[rowIndex % shuffled.length];
+      }
     });
     return row;
   });
