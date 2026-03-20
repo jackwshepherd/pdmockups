@@ -329,7 +329,11 @@ export function QDBuilder({ config, onUpdate, onAddFilter, onUpdateFilter }) {
             <span className="qd-section-label">{isMatter ? 'Document Uploads' : 'Document Upload'}</span>
           </div>
 
-          {isMatter ? (
+          {isMatter && !config.allowFiles ? (
+            <p className="qd-uploads-hint">
+              Enable &quot;Allow file uploads&quot; on the Page Builder tab to add document upload slots.
+            </p>
+          ) : isMatter ? (
             <>
               <p className="qd-uploads-hint">
                 Define the documents users need to upload for this matter record.
@@ -438,7 +442,7 @@ export function QDPreview({ config }) {
         })}
 
         {/* Document upload preview */}
-        {isMatter ? (
+        {isMatter && config.allowFiles ? (
           uploads.length > 0 && (
             <div className="qd-preview-section">
               <h2 className="qd-preview-section-title">Documents</h2>

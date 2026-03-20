@@ -79,6 +79,16 @@
   border-radius: 0;
 }
 
+/* ── Files cell ─────────────────────────────── */
+.table-files-cell {
+  font-size: 13px;
+  color: #666;
+}
+
+.table-files-icon {
+  font-size: 14px;
+}
+
 /* ── Add column ─────────────────────────────── */
 .col-add {
   width: 1%;

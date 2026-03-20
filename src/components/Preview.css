@@ -6,6 +6,24 @@
 
 .preview-content {
   padding: 32px 40px;
+  position: relative;
+}
+
+/* ── Mockup badge ───────────────────────────── */
+.preview-mockup-badge {
+  position: absolute;
+  top: 16px;
+  right: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  font-family: Arial, sans-serif;
+  color: #c00;
+  background: #fee;
+  border: 1px solid #fcc;
+  padding: 4px 10px;
+  border-radius: 3px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
 }
 
 /* ── Editable title ──────────────────────────── */
@@ -79,6 +97,23 @@
 
 .preview-type-btn--active:hover {
   background: #007aa3;
+}
+
+.preview-toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #666;
+  cursor: pointer;
+  margin-left: 12px;
+}
+
+.preview-toggle-label input[type="checkbox"] {
+  width: 15px;
+  height: 15px;
+  cursor: pointer;
 }
 
 /* ── Instructions ────────────────────────────── */

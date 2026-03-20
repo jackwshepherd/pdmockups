@@ -49,13 +49,19 @@ function loadFromStorage() {
 }
 
 // Parse share link once at module level so we don't double-consume it
+let _shareError = false;
 const _sharedPage = (() => {
-  const hash = window.location.hash;
-  if (!hash.startsWith('#share=')) return null;
+  // Support both ?share= (query param, reliable in chat apps) and #share= (hash, legacy)
+  const params = new URLSearchParams(window.location.search);
+  let compressed = params.get('share');
+  if (!compressed) {
+    const hash = window.location.hash;
+    if (hash.startsWith('#share=')) compressed = hash.slice('#share='.length);
+  }
+  if (!compressed) return null;
   try {
-    const compressed = hash.slice('#share='.length);
     const json = decompressFromEncodedURIComponent(compressed);
-    if (!json) return null;
+    if (!json) { _shareError = true; return null; }
     const parsed = JSON.parse(json);
     const page = {
       id: nextPageId++,
@@ -71,6 +77,7 @@ const _sharedPage = (() => {
     window.history.replaceState(null, '', window.location.pathname);
     return page;
   } catch {
+    _shareError = true;
     return null;
   }
 })();
@@ -82,11 +89,21 @@ function App() {
   });
   const [activePageId, setActivePageId] = useState(_sharedPage?.id ?? null);
   const [view, setView] = useState('editor'); // 'editor' | 'questionnaire'
-  const [shareToast, setShareToast] = useState(false);
+  const [shareToast, setShareToast] = useState(
+    _shareError ? 'Share link was corrupted or truncated. Ask the sender to re-share.' : false
+  );
   const previewRef = useRef(null);
   const fileInputRef = useRef(null);
 
   const config = activePageId !== null ? pages.find((p) => p.id === activePageId) : null;
+
+  // Auto-dismiss error toast
+  useEffect(() => {
+    if (_shareError && shareToast) {
+      const t = setTimeout(() => setShareToast(false), 5000);
+      return () => clearTimeout(t);
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Persist to localStorage on every change
   useEffect(() => {
@@ -103,6 +120,7 @@ function App() {
 
   const updateTitle = (title) => updatePage({ title });
   const updateType = (type) => updatePage({ type });
+  const updateAllowFiles = (allowFiles) => updatePage({ allowFiles });
 
   const addFilter = (overrides) => {
     const id = nextFilterId++;
@@ -234,7 +252,7 @@ function App() {
     data.filters = data.filters.map(({ id, ...rest }) => rest);
     const json = JSON.stringify(data);
     const compressed = compressToEncodedURIComponent(json);
-    const url = `${window.location.origin}${window.location.pathname}#share=${compressed}`;
+    const url = `${window.location.origin}${window.location.pathname}?share=${compressed}`;
     navigator.clipboard.writeText(url).then(() => {
       setShareToast(true);
       setTimeout(() => setShareToast(false), 2000);
@@ -282,6 +300,7 @@ function App() {
           style={{ display: 'none' }}
           onChange={importConfig}
         />
+        {shareToast && <div className="app-toast">{typeof shareToast === 'string' ? shareToast : 'Link copied to clipboard'}</div>}
       </>
     );
   }
@@ -351,6 +370,7 @@ function App() {
               config={config}
               onUpdateTitle={updateTitle}
               onUpdateType={updateType}
+              onUpdateAllowFiles={updateAllowFiles}
               onAddFilter={addFilter}
               onAddBulkFilters={addBulkFilters}
               onUpdateFilter={updateFilter}
@@ -363,7 +383,7 @@ function App() {
         </div>
       </div>
 
-      {shareToast && <div className="app-toast">Link copied to clipboard</div>}
+      {shareToast && <div className="app-toast">{typeof shareToast === 'string' ? shareToast : 'Link copied to clipboard'}</div>}
     </div>
   );
 }

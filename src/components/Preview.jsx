@@ -13,6 +13,7 @@ const Preview = forwardRef(function Preview({
   config,
   onUpdateTitle,
   onUpdateType,
+  onUpdateAllowFiles,
   onAddFilter,
   onAddBulkFilters,
   onUpdateFilter,
@@ -64,6 +65,7 @@ const Preview = forwardRef(function Preview({
   return (
     <div className="preview" ref={ref}>
       <div className="preview-content">
+        <div className="preview-mockup-badge">THIS IS A MOCKUP</div>
         <input
           type="text"
           className="preview-title-input"
@@ -86,6 +88,16 @@ const Preview = forwardRef(function Preview({
           >
             Matters
           </button>
+          {config.type === 'matters' && (
+            <label className="preview-toggle-label">
+              <input
+                type="checkbox"
+                checked={!!config.allowFiles}
+                onChange={(e) => onUpdateAllowFiles(e.target.checked)}
+              />
+              Allow file uploads
+            </label>
+          )}
         </div>
 
         <p className="preview-instructions">
@@ -203,6 +215,7 @@ const Preview = forwardRef(function Preview({
         <PreviewTable
           filters={tableFilters}
           pageType={config.type}
+          allowFiles={config.type === 'matters' && !!config.allowFiles}
           allFilters={config.filters}
           onAddFilter={onAddFilter}
           onUpdateFilter={onUpdateFilter}

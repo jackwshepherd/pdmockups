@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { generateDummyRows } from '../data/dummyData';
 import './PreviewTable.css';
 
-function PreviewTable({ filters, pageType, allFilters, onAddFilter, onUpdateFilter }) {
+function PreviewTable({ filters, pageType, allowFiles, allFilters, onAddFilter, onUpdateFilter }) {
   const [showPicker, setShowPicker] = useState(false);
   const rows = generateDummyRows(filters, 5);
   const titleLabel = pageType === 'matters' ? 'Matter Name' : 'Document Title';
@@ -31,6 +31,7 @@ function PreviewTable({ filters, pageType, allFilters, onAddFilter, onUpdateFilt
             <th className="col-btn">Link</th>
             <th className="col-btn">Download</th>
             <th className="col-title">{titleLabel}</th>
+            {allowFiles && <th className="col-filter">Files</th>}
             {filters.map((f) => (
               <th key={f.id} className="col-filter">{f.name}</th>
             ))}
@@ -79,6 +80,11 @@ function PreviewTable({ filters, pageType, allFilters, onAddFilter, onUpdateFilt
               <td className="col-title">
                 <span className="table-title-placeholder" />
               </td>
+              {allowFiles && (
+                <td className="col-filter table-files-cell">
+                  <span className="table-files-icon">&#128206;</span> {Math.floor(Math.random() * 4) + 1}
+                </td>
+              )}
               {filters.map((f) => (
                 <td key={f.id} className="col-filter">{row[f.name]}</td>
               ))}
