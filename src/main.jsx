@@ -6,7 +6,7 @@ import {
   faBars, faSliders, faPlus, faPaste, faCheck,
   faArrowLeft, faCopy, faFloppyDisk, faFileImport, faFilePdf, faTrash,
   faTableColumns, faList, faXmark, faGripVertical,
-  faPen, faEye,
+  faPen, faEye, faShareNodes,
 } from '@fortawesome/pro-solid-svg-icons'
 import './index.css'
 import App from './App.jsx'
@@ -15,7 +15,7 @@ library.add(
   faBars, faSliders, faPlus, faPaste, faCheck,
   faArrowLeft, faCopy, faFloppyDisk, faFileImport, faFilePdf, faTrash,
   faTableColumns, faList, faXmark, faGripVertical,
-  faPen, faEye,
+  faPen, faEye, faShareNodes,
 )
 
 createRoot(document.getElementById('root')).render(

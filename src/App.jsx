@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
+import { compressToEncodedURIComponent, decompressFromEncodedURIComponent } from 'lz-string';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Landing from './components/Landing';
 import Preview from './components/Preview';
@@ -47,10 +48,41 @@ function loadFromStorage() {
   return [];
 }
 
+// Parse share link once at module level so we don't double-consume it
+const _sharedPage = (() => {
+  const hash = window.location.hash;
+  if (!hash.startsWith('#share=')) return null;
+  try {
+    const compressed = hash.slice('#share='.length);
+    const json = decompressFromEncodedURIComponent(compressed);
+    if (!json) return null;
+    const parsed = JSON.parse(json);
+    const page = {
+      id: nextPageId++,
+      title: parsed.title || '',
+      type: parsed.type || 'documents',
+      filters: (parsed.filters || []).map((f) => ({
+        ...f,
+        id: nextFilterId++,
+        values: f.values || [],
+      })),
+      questionnaire: parsed.questionnaire || { sections: [], uploads: [] },
+    };
+    window.history.replaceState(null, '', window.location.pathname);
+    return page;
+  } catch {
+    return null;
+  }
+})();
+
 function App() {
-  const [pages, setPages] = useState(loadFromStorage);
-  const [activePageId, setActivePageId] = useState(null);
+  const [pages, setPages] = useState(() => {
+    const stored = loadFromStorage();
+    return _sharedPage ? [...stored, _sharedPage] : stored;
+  });
+  const [activePageId, setActivePageId] = useState(_sharedPage?.id ?? null);
   const [view, setView] = useState('editor'); // 'editor' | 'questionnaire'
+  const [shareToast, setShareToast] = useState(false);
   const previewRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -195,6 +227,20 @@ function App() {
     e.target.value = '';
   };
 
+  const shareLink = () => {
+    if (!config) return;
+    const { id, ...data } = config;
+    // Strip filter IDs to save space
+    data.filters = data.filters.map(({ id, ...rest }) => rest);
+    const json = JSON.stringify(data);
+    const compressed = compressToEncodedURIComponent(json);
+    const url = `${window.location.origin}${window.location.pathname}#share=${compressed}`;
+    navigator.clipboard.writeText(url).then(() => {
+      setShareToast(true);
+      setTimeout(() => setShareToast(false), 2000);
+    });
+  };
+
   const exportPdf = async () => {
     const el = previewRef.current;
     if (!el) return;
@@ -273,6 +319,9 @@ function App() {
           </div>
 
           <div className="app-topbar-actions">
+            <button className="app-topbar-btn" onClick={shareLink} title="Copy share link">
+              <FontAwesomeIcon icon="fa-solid fa-share-nodes" />
+            </button>
             <button className="app-topbar-btn" onClick={() => duplicatePage(activePageId)} title="Duplicate page">
               <FontAwesomeIcon icon="fa-solid fa-copy" />
             </button>
@@ -313,6 +362,8 @@ function App() {
           )}
         </div>
       </div>
+
+      {shareToast && <div className="app-toast">Link copied to clipboard</div>}
     </div>
   );
 }
