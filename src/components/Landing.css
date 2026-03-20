@@ -109,8 +109,8 @@
   cursor: pointer;
 }
 
-.landing-card-action:first-child {
-  border-right: 1px solid #f0f0f0;
+.landing-card-action + .landing-card-action {
+  border-left: 1px solid #f0f0f0;
 }
 
 .landing-card-action:hover {

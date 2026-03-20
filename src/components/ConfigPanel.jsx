@@ -1,15 +1,16 @@
 import { useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FilterRow from './FilterRow';
 import './ConfigPanel.css';
 
 function ConfigPanel({
   config,
-  onGoBack,
   onDeletePage,
   onDuplicatePage,
   onUpdateTitle,
   onUpdateType,
   onAddFilter,
+  onAddBulkFilters,
   onUpdateFilter,
   onRemoveFilter,
   onReorderFilters,
@@ -19,6 +20,8 @@ function ConfigPanel({
 }) {
   const [dragIndex, setDragIndex] = useState(null);
   const [overIndex, setOverIndex] = useState(null);
+  const [showBulkAdd, setShowBulkAdd] = useState(false);
+  const [bulkText, setBulkText] = useState('');
 
   const handleDragStart = (index) => {
     setDragIndex(index);
@@ -45,9 +48,7 @@ function ConfigPanel({
   return (
     <div className="config-panel">
       <div className="config-top-row">
-        <button className="config-back-btn" onClick={onGoBack}>
-          &larr; All Pages
-        </button>
+        <h2 className="config-heading">Page Configuration</h2>
         <div className="config-top-actions">
           <button className="config-top-link" onClick={onDuplicatePage}>
             Duplicate
@@ -57,8 +58,6 @@ function ConfigPanel({
           </button>
         </div>
       </div>
-
-      <h2 className="config-heading">Page Configuration</h2>
 
       <label className="config-label">
         Page Title
@@ -86,10 +85,46 @@ function ConfigPanel({
       <div className="config-filters-section">
         <div className="config-filters-header">
           <span className="config-label">Filters</span>
-          <button className="config-add-btn" onClick={onAddFilter}>
-            + Add filter
-          </button>
+          <div className="config-filters-actions">
+            <button className="config-add-btn" onClick={onAddFilter}>
+              <FontAwesomeIcon icon="fa-solid fa-plus" /> Add filter
+            </button>
+            <button
+              className="config-add-btn config-add-btn--secondary"
+              onClick={() => setShowBulkAdd((v) => !v)}
+            >
+              <FontAwesomeIcon icon="fa-solid fa-paste" /> Bulk add
+            </button>
+          </div>
         </div>
+
+        {showBulkAdd && (
+          <div className="config-bulk-add">
+            <textarea
+              className="config-bulk-textarea"
+              value={bulkText}
+              onChange={(e) => setBulkText(e.target.value)}
+              placeholder="Paste filter names here (one per line or comma-separated)"
+              rows={4}
+            />
+            <button
+              className="config-bulk-import-btn"
+              onClick={() => {
+                const names = bulkText
+                  .split(/[\n\r,]+/)
+                  .map((s) => s.trim())
+                  .filter(Boolean);
+                if (names.length > 0) {
+                  onAddBulkFilters(names);
+                  setBulkText('');
+                  setShowBulkAdd(false);
+                }
+              }}
+            >
+              <FontAwesomeIcon icon="fa-solid fa-check" /> Add {bulkText.split(/[\n\r,]+/).map(s => s.trim()).filter(Boolean).length} filter{bulkText.split(/[\n\r,]+/).map(s => s.trim()).filter(Boolean).length !== 1 ? 's' : ''}
+            </button>
+          </div>
+        )}
 
         {config.filters.length === 0 && (
           <p className="config-empty">No filters added yet.</p>

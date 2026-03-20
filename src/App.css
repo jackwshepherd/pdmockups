@@ -1,4 +1,110 @@
-.app {
+/* ── Main layout ─────────────────────────────── */
+.app-layout {
   display: flex;
   height: 100vh;
+}
+
+/* ── Main area (now full width) ──────────────── */
+.app-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.app-main-topbar {
+  height: 56px;
+  background: #000;
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.app-topbar-back {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 15px;
+  padding: 6px 8px;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.app-topbar-back:hover {
+  color: #fff;
+}
+
+.app-main-logo {
+  font-family: Georgia, 'Times New Roman', serif;
+  font-weight: 700;
+  font-size: 20px;
+  color: #fff;
+  letter-spacing: 0.3px;
+  flex-shrink: 0;
+}
+
+/* ── Tabs (in topbar) ────────────────────────── */
+.app-tabs {
+  display: flex;
+  gap: 0;
+  margin-left: 16px;
+}
+
+.app-tab {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: Arial, sans-serif;
+  color: rgba(255, 255, 255, 0.5);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.app-tab:hover {
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.app-tab--active {
+  color: #fff;
+  border-bottom-color: #0099cc;
+}
+
+/* ── Topbar action buttons ───────────────────── */
+.app-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: auto;
+}
+
+.app-topbar-btn {
+  background: none;
+  border: none;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 14px;
+  padding: 6px 8px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.app-topbar-btn:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.app-topbar-btn--danger:hover {
+  color: #f66;
+  background: rgba(255, 100, 100, 0.1);
+}
+
+/* ── Content area ────────────────────────────── */
+.app-main-content {
+  flex: 1;
+  overflow-y: auto;
+  min-height: 0;
 }

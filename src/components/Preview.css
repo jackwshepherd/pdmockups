@@ -1,56 +1,87 @@
 .preview {
   flex: 1;
-  height: 100vh;
   overflow-y: auto;
   background: #fff;
-}
-
-.preview-topbar {
-  height: 80px;
-  width: 100%;
-  background: #000;
-  display: flex;
-  align-items: center;
-  padding: 0 24px;
-  gap: 16px;
-}
-
-.drawer-toggle {
-  background: none;
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  color: #fff;
-  font-family: Arial, sans-serif;
-  font-size: 13px;
-  padding: 6px 12px;
-  border-radius: 3px;
-  cursor: pointer;
-  white-space: nowrap;
-}
-
-.drawer-toggle:hover {
-  border-color: rgba(255, 255, 255, 0.6);
-}
-
-.preview-topbar-logo {
-  font-family: Georgia, 'Times New Roman', serif;
-  font-weight: 700;
-  font-size: 22px;
-  color: #fff;
-  letter-spacing: 0.3px;
 }
 
 .preview-content {
   padding: 32px 40px;
 }
 
-.preview-title {
+/* ── Editable title ──────────────────────────── */
+.preview-title-input {
+  display: block;
+  width: 100%;
   font-family: Georgia, 'Times New Roman', serif;
   font-size: 36px;
   font-weight: 700;
   color: #111;
+  border: none;
+  border-bottom: 2px solid transparent;
+  outline: none;
+  padding: 0 0 4px;
   margin-bottom: 12px;
+  background: transparent;
+  transition: border-color 0.15s ease;
 }
 
+.preview-title-input::placeholder {
+  color: #ccc;
+}
+
+.preview-title-input:hover {
+  border-bottom-color: #e0e0e0;
+}
+
+.preview-title-input:focus {
+  border-bottom-color: #0099cc;
+}
+
+/* ── Type toggle ─────────────────────────────── */
+.preview-type-row {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.preview-type-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #888;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-right: 4px;
+}
+
+.preview-type-btn {
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: Arial, sans-serif;
+  color: #888;
+  background: #f5f5f5;
+  border: 1px solid #ddd;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.preview-type-btn:hover {
+  color: #555;
+  border-color: #bbb;
+}
+
+.preview-type-btn--active {
+  color: #fff;
+  background: #0099cc;
+  border-color: #0099cc;
+}
+
+.preview-type-btn--active:hover {
+  background: #007aa3;
+}
+
+/* ── Instructions ────────────────────────────── */
 .preview-instructions {
   font-size: 15px;
   color: #555;
@@ -58,49 +89,237 @@
   line-height: 1.5;
 }
 
+/* ── Filters grid ────────────────────────────── */
 .preview-filters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 12px;
   margin-bottom: 24px;
 }
 
-.preview-filter-label {
-  display: block;
-  font-size: 15px;
-  font-weight: 700;
-  font-family: Arial, sans-serif;
-  color: #111;
+.preview-filter {
+  padding: 10px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: #fafafa;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+  position: relative;
+}
+
+.preview-filter:hover {
+  border-color: #ccc;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+}
+
+.preview-filter--dragging {
+  opacity: 0.4;
+}
+
+.preview-filter--drag-over {
+  border-color: #0099cc;
+  box-shadow: 0 0 0 2px rgba(0, 153, 204, 0.15);
+}
+
+/* ── Filter top row (label + actions) ────────── */
+.preview-filter-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
   margin-bottom: 6px;
 }
 
-.preview-filter-select {
+.preview-filter-label {
+  font-size: 14px;
+  font-weight: 700;
+  font-family: Arial, sans-serif;
+  color: #111;
+  cursor: text;
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  padding: 2px 0;
+  border-bottom: 1px dashed transparent;
+}
+
+.preview-filter-label:hover {
+  border-bottom-color: #bbb;
+}
+
+.preview-filter-name-input {
+  flex: 1;
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: Arial, sans-serif;
+  color: #111;
+  border: none;
+  border-bottom: 1px solid #0099cc;
+  outline: none;
+  padding: 2px 0;
+  background: transparent;
+}
+
+/* ── Filter action icons ─────────────────────── */
+.preview-filter-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.preview-filter:hover .preview-filter-actions {
+  opacity: 1;
+}
+
+.preview-filter-action-btn {
+  background: none;
+  border: none;
+  color: #bbb;
+  font-size: 12px;
+  padding: 3px 5px;
+  cursor: pointer;
+  border-radius: 3px;
+}
+
+.preview-filter-action-btn:hover {
+  color: #555;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.preview-filter-action-btn--active {
+  color: #0099cc;
+}
+
+.preview-filter-action-btn--danger:hover {
+  color: #c00;
+  background: rgba(204, 0, 0, 0.06);
+}
+
+.preview-filter-drag-handle {
+  color: #ccc;
+  font-size: 11px;
+  cursor: grab;
+  padding: 3px 4px;
+}
+
+.preview-filter-drag-handle:hover {
+  color: #888;
+}
+
+.preview-filter-drag-handle:active {
+  cursor: grabbing;
+}
+
+/* ── Filter select/date ──────────────────────── */
+.preview-filter-select,
+.preview-filter-date {
   width: 100%;
-  padding: 8px 10px;
+  padding: 7px 8px;
   font-size: 13px;
   color: #999;
-  border: 1px solid #ccc;
+  border: 1px solid #ddd;
   border-radius: 3px;
   font-family: Arial, sans-serif;
   background: #fff;
 }
 
-.preview-add-filter-placeholder {
-  border: 2px dashed #ccc;
-  border-radius: 6px;
-  padding: 24px;
-  text-align: center;
-  font-size: 14px;
+.preview-filter-value-count {
+  display: block;
+  font-size: 11px;
+  color: #aaa;
+  margin-top: 4px;
+}
+
+/* ── Add filter card ─────────────────────────── */
+.preview-filter--add {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 2px dashed #d0d0d0;
+  background: transparent;
   color: #999;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  min-height: 80px;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.preview-filter--add:hover {
+  border-color: #0099cc;
+  color: #0099cc;
+  box-shadow: none;
+}
+
+/* ── Bulk add ────────────────────────────────── */
+.preview-bulk-add {
   margin-bottom: 24px;
+  padding: 12px 16px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  background: #fafafa;
+}
+
+.preview-bulk-textarea {
+  width: 100%;
+  padding: 10px;
+  font-size: 13px;
+  font-family: Arial, sans-serif;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  margin-bottom: 8px;
+}
+
+.preview-bulk-textarea:focus {
+  outline: none;
+  border-color: #0099cc;
+  box-shadow: 0 0 0 2px rgba(0, 153, 204, 0.15);
+}
+
+.preview-bulk-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.preview-bulk-import-btn {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #fff;
+  background: #0099cc;
+  border: none;
+  border-radius: 4px;
   cursor: pointer;
 }
 
-.preview-add-filter-placeholder:hover {
-  border-color: #0099cc;
-  color: #0099cc;
+.preview-bulk-import-btn:hover {
+  background: #007aa3;
 }
 
+.preview-bulk-cancel-btn {
+  padding: 6px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #555;
+  background: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.preview-bulk-cancel-btn:hover {
+  background: #f5f5f5;
+}
+
+/* ── Search button ───────────────────────────── */
 .preview-search-btn {
   padding: 10px 28px;
   font-size: 15px;
@@ -118,8 +337,46 @@
   background: #007aa3;
 }
 
+/* ── Instant tooltips ────────────────────────── */
+.has-tooltip {
+  position: relative;
+}
+
+.has-tooltip::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: calc(100% + 6px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: #333;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 400;
+  font-family: Arial, sans-serif;
+  padding: 4px 8px;
+  border-radius: 3px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.1s ease;
+  z-index: 10;
+}
+
+.has-tooltip:hover::after {
+  opacity: 1;
+}
+
+/* ── Print ───────────────────────────────────── */
 @media print {
-  .drawer-toggle {
+  .app-main-topbar,
+  .preview-filter-actions,
+  .preview-filter--add,
+  .preview-bulk-add,
+  .preview-type-row {
     display: none;
+  }
+
+  .preview-title-input {
+    border: none !important;
   }
 }

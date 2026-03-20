@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect, useCallback } from 'react';
 import html2canvas from 'html2canvas';
 import { jsPDF } from 'jspdf';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Landing from './components/Landing';
-import ConfigPanel from './components/ConfigPanel';
 import Preview from './components/Preview';
+import { QDBuilder } from './components/QuestionnaireDesigner';
 import './App.css';
 
 const STORAGE_KEY = 'pd-mockups';
@@ -17,6 +18,7 @@ function createPage() {
     title: '',
     type: 'documents',
     filters: [],
+    questionnaire: { sections: [], uploads: [] },
   };
 }
 
@@ -48,7 +50,7 @@ function loadFromStorage() {
 function App() {
   const [pages, setPages] = useState(loadFromStorage);
   const [activePageId, setActivePageId] = useState(null);
-  const [drawerOpen, setDrawerOpen] = useState(true);
+  const [view, setView] = useState('editor'); // 'editor' | 'questionnaire'
   const previewRef = useRef(null);
   const fileInputRef = useRef(null);
 
@@ -70,12 +72,24 @@ function App() {
   const updateTitle = (title) => updatePage({ title });
   const updateType = (type) => updatePage({ type });
 
-  const addFilter = () => {
+  const addFilter = (overrides) => {
+    const id = nextFilterId++;
     updatePage((p) => ({
       ...p,
       filters: [
         ...p.filters,
-        { id: nextFilterId++, name: '', showInTable: false, values: [] },
+        { id, name: '', fieldType: 'dropdown', showAsFilter: true, showInTable: false, values: [], ...overrides },
+      ],
+    }));
+    return id;
+  };
+
+  const addBulkFilters = (names) => {
+    updatePage((p) => ({
+      ...p,
+      filters: [
+        ...p.filters,
+        ...names.map((name) => ({ id: nextFilterId++, name, fieldType: 'dropdown', showAsFilter: true, showInTable: false, values: [] })),
       ],
     }));
   };
@@ -112,11 +126,12 @@ function App() {
 
   const openPage = (id) => {
     setActivePageId(id);
-    setDrawerOpen(true);
+    setView('editor');
   };
 
   const goBack = () => {
     setActivePageId(null);
+    setView('editor');
   };
 
   const deletePage = (id) => {
@@ -168,6 +183,7 @@ function App() {
             id: nextFilterId++,
             values: f.values || [],
           })),
+          questionnaire: parsed.questionnaire || { sections: [], uploads: [] },
         };
         setPages((prev) => [...prev, page]);
         setActivePageId(page.id);
@@ -224,26 +240,8 @@ function App() {
     );
   }
 
-  // Editor view
   return (
-    <div className="app">
-      {drawerOpen && (
-        <ConfigPanel
-          config={config}
-          onGoBack={goBack}
-          onDeletePage={() => deletePage(activePageId)}
-          onDuplicatePage={() => duplicatePage(activePageId)}
-          onUpdateTitle={updateTitle}
-          onUpdateType={updateType}
-          onAddFilter={addFilter}
-          onUpdateFilter={updateFilter}
-          onRemoveFilter={removeFilter}
-          onReorderFilters={reorderFilters}
-          onExport={exportConfig}
-          onImport={() => fileInputRef.current?.click()}
-          onExportPdf={exportPdf}
-        />
-      )}
+    <div className="app-layout">
       <input
         ref={fileInputRef}
         type="file"
@@ -251,12 +249,70 @@ function App() {
         style={{ display: 'none' }}
         onChange={importConfig}
       />
-      <Preview
-        ref={previewRef}
-        config={config}
-        drawerOpen={drawerOpen}
-        onToggleDrawer={() => setDrawerOpen((v) => !v)}
-      />
+
+      <div className="app-main">
+        <div className="app-main-topbar">
+          <button className="app-topbar-back" onClick={goBack}>
+            <FontAwesomeIcon icon="fa-solid fa-arrow-left" />
+          </button>
+          <span className="app-main-logo">Precedents Database</span>
+
+          <div className="app-tabs">
+            <button
+              className={'app-tab' + (view === 'editor' ? ' app-tab--active' : '')}
+              onClick={() => setView('editor')}
+            >
+              Page Builder
+            </button>
+            <button
+              className={'app-tab' + (view === 'questionnaire' ? ' app-tab--active' : '')}
+              onClick={() => setView('questionnaire')}
+            >
+              Questionnaire
+            </button>
+          </div>
+
+          <div className="app-topbar-actions">
+            <button className="app-topbar-btn" onClick={() => duplicatePage(activePageId)} title="Duplicate page">
+              <FontAwesomeIcon icon="fa-solid fa-copy" />
+            </button>
+            <button className="app-topbar-btn" onClick={exportConfig} title="Save PD file">
+              <FontAwesomeIcon icon="fa-solid fa-floppy-disk" />
+            </button>
+            <button className="app-topbar-btn" onClick={() => fileInputRef.current?.click()} title="Import PD file">
+              <FontAwesomeIcon icon="fa-solid fa-file-import" />
+            </button>
+            <button className="app-topbar-btn" onClick={exportPdf} title="Export PDF">
+              <FontAwesomeIcon icon="fa-solid fa-file-pdf" />
+            </button>
+            <button
+              className="app-topbar-btn app-topbar-btn--danger"
+              onClick={() => deletePage(activePageId)}
+              title="Delete page"
+            >
+              <FontAwesomeIcon icon="fa-solid fa-trash" />
+            </button>
+          </div>
+        </div>
+
+        <div className="app-main-content">
+          {view === 'editor' ? (
+            <Preview
+              ref={previewRef}
+              config={config}
+              onUpdateTitle={updateTitle}
+              onUpdateType={updateType}
+              onAddFilter={addFilter}
+              onAddBulkFilters={addBulkFilters}
+              onUpdateFilter={updateFilter}
+              onRemoveFilter={removeFilter}
+              onReorderFilters={reorderFilters}
+            />
+          ) : (
+            <QDBuilder config={config} onUpdate={updatePage} onAddFilter={addFilter} onUpdateFilter={updateFilter} />
+          )}
+        </div>
+      </div>
     </div>
   );
 }
