@@ -1,6 +1,7 @@
 import { useState, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import './Modal.css';
+import './ValuesModal.css';
 import './FilterEditModal.css';
 
 function parseValues(text) {
