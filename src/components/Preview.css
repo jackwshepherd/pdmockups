@@ -348,6 +348,11 @@
 }
 
 /* ── Print ───────────────────────────────────── */
+@page {
+  size: A4 landscape;
+  margin: 15mm;
+}
+
 @media print {
   .app-main-topbar,
   .preview-filter-actions,
@@ -359,5 +364,43 @@
 
   .preview-title-input {
     border: none !important;
+    font-size: 24px;
+  }
+
+  .preview-content {
+    padding: 0;
+  }
+
+  .preview-instructions {
+    font-size: 11px;
+  }
+
+  .preview-filter-label {
+    font-size: 11px;
+  }
+
+  .preview-filter-select,
+  .preview-filter-date {
+    font-size: 10px;
+    padding: 4px 6px;
+  }
+
+  .preview-filter-value-count {
+    font-size: 9px;
+  }
+
+  .preview-filter {
+    padding: 6px 8px;
+  }
+
+  .preview-filters-grid {
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+
+  .preview-search-btn {
+    font-size: 12px;
+    padding: 6px 18px;
+    margin-bottom: 20px;
   }
 }
