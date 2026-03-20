@@ -92,7 +92,7 @@
 /* ── Filters grid ────────────────────────────── */
 .preview-filters-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   gap: 12px;
   margin-bottom: 24px;
 }
@@ -137,9 +137,10 @@
   cursor: text;
   flex: 1;
   min-width: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
   overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
   padding: 2px 0;
   border-bottom: 1px dashed transparent;
 }
